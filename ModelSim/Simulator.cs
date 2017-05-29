@@ -15,9 +15,9 @@ namespace ModelSim
         #endregion
 
         #region Constructor
-        public Simulator()
+        public Simulator(int steps)
         {
-            
+            this.Steps = steps;
         }
         #endregion
 

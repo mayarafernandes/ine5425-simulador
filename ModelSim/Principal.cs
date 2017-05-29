@@ -13,83 +13,62 @@ namespace ModelSim
 {
     public partial class Principal : Form
     {
-        public int ChartType { get; set; }
-
+        #region Constructor
         public Principal()
         {
             InitializeComponent();
-            this.ChartType = 3;
-            this.DrawChart();
-            Simulator sim = new Simulator();
-            sim.Steps = 10;
-            SimulationResult simResult = sim.Run();
+            ClearCharts();
         }
+        #endregion
 
-        private void buttonCreateChart_Click(object sender, EventArgs e)
+        #region Charts
+        private void RunSimulation(int steps)
         {
-            this.DrawChart();
+            Simulator sim = new Simulator(steps);
+            SimulationResult simResult = sim.Run();            
+
+            Series series = this.chartPath.Series.Add("Caminho Percorrido");
+
+            series.MarkerStyle = MarkerStyle.Diamond;
+            series.MarkerColor = Color.Blue;
+
+            series.ChartType = SeriesChartType.Line;
+            for (int i = 0; i < 10; i++)
+                series.Points.AddXY(simResult.CoordinatesX[i], simResult.CoordinatesY[i]);
         }
 
-        private void DrawChart()
+        private void ClearCharts()
         {
-            this.chart.Titles.Clear();
-            this.chart.Series.Clear();
-
-            if (this.ChartType == 1)
-            {
-                // Data arrays
-                string[] seriesArray = { "Cat", "Dog", "Bird", "Monkey" };
-                int[] pointsArray = { 2, 1, 7, 5 };
-
-                // Set palette
-                this.chart.Palette = ChartColorPalette.EarthTones;
-
-                // Set title            
-                this.chart.Titles.Add("Animals");
-
-                // Add series.
-                for (int i = 0; i < seriesArray.Length; i++)
-                {
-                    Series series = this.chart.Series.Add(seriesArray[i]);
-                    series.Points.Add(pointsArray[i]);
-                }
-                this.ChartType = 2;
-            }
-            else if (this.ChartType == 2)
-            {
-                this.chart.Titles.Add("Total Income");
-
-                Series series = this.chart.Series.Add("Total Income");
-                series.ChartType = SeriesChartType.Spline;
-                series.Points.AddXY("September", 100);
-                series.Points.AddXY("Obtober", 300);
-                series.Points.AddXY("November", 800);
-                series.Points.AddXY("December", 200);
-                series.Points.AddXY("January", 600);
-                series.Points.AddXY("February", 400);
-
-                this.ChartType = 3;
-            }
-            else if (this.ChartType == 3)
-            {
-                this.chart.Titles.Add("Total Income");               
-
-                Series series = this.chart.Series.Add("Total Income");
-
-                series.ChartType = SeriesChartType.Line;
-                for (int i = -5; i < 6; i++)
-                    series.Points.AddXY(i, i - 2);
-
-                series = this.chart.Series.Add("Total Income 2");
-
-                series.MarkerStyle = MarkerStyle.Diamond;
-                series.MarkerColor = Color.Blue;
-                
-                series.ChartType = SeriesChartType.Line;
-                for (int i = -5; i < 6; i++)
-                    series.Points.AddXY(i, i - 4);
-            }
-            
+            this.chartPath.Titles.Clear();
+            this.chartDistance.Titles.Clear();
+            this.chartPath.Series.Clear();
+            this.chartDistance.Series.Clear();
         }
+        #endregion
+
+        #region Events
+        private void buttonRun_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(textBoxSteps.Text))
+            {
+                MessageBox.Show("Insira o número de passos", "ERRO", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            int steps = 0;
+            if (!Int32.TryParse(textBoxSteps.Text, out steps) || steps <= 0)
+            {
+                MessageBox.Show("Número de passos inválido", "ERRO", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            RunSimulation(steps);
+        }
+
+        private void buttonClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+        #endregion
     }
 }
