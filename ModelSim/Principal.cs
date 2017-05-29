@@ -20,6 +20,9 @@ namespace ModelSim
             InitializeComponent();
             this.ChartType = 3;
             this.DrawChart();
+            Simulator sim = new Simulator();
+            sim.Steps = 10;
+            SimulationResult simResult = sim.Run();
         }
 
         private void buttonCreateChart_Click(object sender, EventArgs e)
@@ -86,7 +89,7 @@ namespace ModelSim
                 for (int i = -5; i < 6; i++)
                     series.Points.AddXY(i, i - 4);
             }
-
+            
         }
     }
 }
