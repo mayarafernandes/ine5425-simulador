@@ -67,11 +67,11 @@
     <Compile Include="Principal.Designer.cs">
       <DependentUpon>Principal.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="Control\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimulationResult.cs" />
-    <Compile Include="Simulator.cs" />
-    <Compile Include="UniformDistribution.cs" />
+    <Compile Include="Model\SimulationResult.cs" />
+    <Compile Include="Control\Simulator.cs" />
+    <Compile Include="Model\UniformDistribution.cs" />
     <EmbeddedResource Include="Principal.resx">
       <DependentUpon>Principal.cs</DependentUpon>
     </EmbeddedResource>
@@ -109,5 +109,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

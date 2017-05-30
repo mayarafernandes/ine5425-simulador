@@ -30,12 +30,25 @@ namespace ModelSim
             double y = 0;
             
             for (int i=0; i < this.Steps; i++)
-            {                
+            {
                 int l = i + 1;
                 double angleRad = uniform.GetRandomValue();
                 x = (x + (l * Math.Cos(angleRad)));                
                 y = (y + (l * Math.Sin(angleRad)));
                 double distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+
+                if (i == 0)
+                {
+                    simulationResult.MinX = simulationResult.MaxX = x;
+                    simulationResult.MinY = simulationResult.MaxY = y;
+                }
+                else
+                {
+                    simulationResult.MinX = (x < simulationResult.MinX) ? x : simulationResult.MinX;
+                    simulationResult.MaxX = (x > simulationResult.MaxX) ? x : simulationResult.MaxX;
+                    simulationResult.MinY = (y < simulationResult.MinY) ? y : simulationResult.MinY;
+                    simulationResult.MaxY = (y > simulationResult.MaxY) ? y : simulationResult.MaxY;
+                }                
                 simulationResult.CoordinatesX.Add(x);
                 simulationResult.CoordinatesY.Add(y);
                 simulationResult.Distances.Add(distance);
