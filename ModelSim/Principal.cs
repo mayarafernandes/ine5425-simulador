@@ -24,18 +24,21 @@ namespace ModelSim
         #region Charts
         private void RunSimulation(int steps, int repetitions)
         {
-            Simulator sim = new Simulator(steps);
-            SimulationResult simResult = sim.Run();
+            Simulator simulator = new Simulator(steps);
+            SimulationResult simResult = new SimulationResult();
             if (repetitions == 0)
             {
+                simResult = simulator.Run();
                 PlotChartPath(simResult, steps);
                 PlotChartDistances(simResult, steps);
                 labelDistanceWalkedResult.Text = Math.Truncate(simResult.DistanceFinal).ToString();
                 labelDistanceEstimatedResult.Text = Math.Truncate(simResult.DistanceDiff).ToString();                
             }
             else
-                PlotChartHistogram();
-            
+            {
+                simResult = simulator.Run(repetitions);
+                PlotChartHistogram(simResult);
+            }
         }
 
         private void PlotChartPath(SimulationResult simResult, int steps)
@@ -59,7 +62,7 @@ namespace ModelSim
             };
             chartPath.ChartAreas.Add(chartArea);
 
-            Series series = new Series()
+            Series series = new Series("Caminho")
             {
                 ChartArea = "Path",
                 Color = Color.FromArgb(0x78CCCC00),
@@ -121,9 +124,30 @@ namespace ModelSim
             chartDistance.Series.Add(seriesSquareRoot);
         }
 
-        private void PlotChartHistogram()
+        private void PlotChartHistogram(SimulationResult simResult)
         {
+            ChartArea chartArea = new ChartArea("Histogram");
+            chartArea.AxisX = new Axis()
+            {
+                MajorGrid = new Grid() { LineColor = Color.FromArgb(0x78b6b6b6) }
+            };
+            chartArea.AxisY = new Axis()
+            {
+                MajorGrid = new Grid() { LineColor = Color.FromArgb(0x78b6b6b6) }
+            };
+            chartHistogram.ChartAreas.Add(chartArea);
 
+            Series series = new Series("Distâncias")
+            {
+                ChartArea = "Histogram",
+                Color = Color.DarkBlue,
+                BorderWidth = 3,                
+                ChartType = SeriesChartType.Column
+            };
+
+            for (int i = 0; i < simResult.CoordinatesX.Count; i++)
+                series.Points.AddXY(simResult.CoordinatesX[i], simResult.CoordinatesY[i]);
+            chartHistogram.Series.Add(series);
         }
 
         private void ClearCharts()

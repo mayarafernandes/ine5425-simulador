@@ -60,10 +60,45 @@ namespace ModelSim
 
         public SimulationResult Run(int repetitions)
         {
+            List<double> distancesDiffs = new List<double>();
             SimulationResult simulationResult = new SimulationResult();
             List<SimulationResult> repetitionsResults = new List<SimulationResult>();
             for (int i = 0; i < repetitions; i++)
                 repetitionsResults.Add(Run());
+            foreach (SimulationResult simResult in repetitionsResults)
+                distancesDiffs.Add(simResult.DistanceDiff);
+            distancesDiffs.Sort();
+
+            int classesCount = Int32.Parse(Math.Truncate(Math.Sqrt(repetitions)).ToString());
+            if (classesCount > 30)
+                classesCount = 30;
+            double classValue = (distancesDiffs[distancesDiffs.Count - 1] / classesCount);
+            Dictionary<double, int> classesFrequencies = new Dictionary<double, int>();
+            for (int i = 1; i <= classesCount; i++)
+                classesFrequencies.Add((i * classValue), 0);
+            foreach (double distanceDiff in distancesDiffs)
+            {
+                for (int i = 1; i <= classesCount; i++)
+                {
+                    if (i == 1)
+                    {
+                        if (distanceDiff > 0 && distanceDiff <= classValue)
+                            classesFrequencies[classValue] += 1;
+                    }
+                    else
+                    {
+                        double lower = (i - 1) * classValue;
+                        double upper = i * classValue;
+                        if ((distanceDiff > lower) && (distanceDiff <= upper))
+                            classesFrequencies[upper] += 1;
+                    }
+                }
+            }
+            foreach (KeyValuePair<double, int> classFrequency in classesFrequencies)
+            {
+                simulationResult.CoordinatesX.Add(classFrequency.Key);
+                simulationResult.CoordinatesY.Add(Math.Truncate((double)(100 * (classFrequency.Value)) / repetitions));
+            }
 
             return simulationResult;
         }
