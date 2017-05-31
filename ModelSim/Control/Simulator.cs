@@ -28,15 +28,15 @@ namespace ModelSim
             SimulationResult simulationResult = new SimulationResult();
             double x = 0;
             double y = 0;
-            
+
+            simulationResult.DistanceFinal = 0;
             for (int i=0; i < this.Steps; i++)
             {
-                int l = i + 1;
+                int l = 1;
                 double angleRad = uniform.GetRandomValue();
                 x = (x + (l * Math.Cos(angleRad)));                
                 y = (y + (l * Math.Sin(angleRad)));
                 double distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
-
                 if (i == 0)
                 {
                     simulationResult.MinX = simulationResult.MaxX = x;
@@ -52,7 +52,18 @@ namespace ModelSim
                 simulationResult.CoordinatesX.Add(x);
                 simulationResult.CoordinatesY.Add(y);
                 simulationResult.Distances.Add(distance);
+                simulationResult.DistanceFinal += distance;
             }
+            simulationResult.DistanceDiff = Math.Abs((Steps * Math.Sqrt(Steps)) - simulationResult.DistanceFinal);
+            return simulationResult;
+        }
+
+        public SimulationResult Run(int repetitions)
+        {
+            SimulationResult simulationResult = new SimulationResult();
+            List<SimulationResult> repetitionsResults = new List<SimulationResult>();
+            for (int i = 0; i < repetitions; i++)
+                repetitionsResults.Add(Run());
 
             return simulationResult;
         }
