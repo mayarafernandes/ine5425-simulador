@@ -11,24 +11,25 @@ namespace ModelSim
         #region Properties
         private Random RandomBase { get; set; }
 
-        public double UpperBound { get; set; }
+        public int UpperBound { get; set; }
 
-        public double LowerBound { get; set; }
+        public int LowerBound { get; set; }
         #endregion
 
         #region Constructor
-        public UniformDistribution(double lowerBound, double upperBound)
+        public UniformDistribution(int lowerBound, int upperBound)
         {
             this.LowerBound = lowerBound;
             this.UpperBound = upperBound;
-            this.RandomBase = new Random();
+            this.RandomBase = new Random((int)DateTime.Now.Ticks);
         }
         #endregion
 
         #region Get Value
-        public double GetRandomValue()
+        public int GetRandomValue()
         {
-            return (this.RandomBase.NextDouble() * (this.UpperBound - this.LowerBound) + this.LowerBound);
+            //return (this.RandomBase.NextDouble() * (this.UpperBound - this.LowerBound) + this.LowerBound);
+            return RandomBase.Next(this.LowerBound, this.UpperBound);
         }
         #endregion
     }

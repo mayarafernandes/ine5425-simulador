@@ -22,9 +22,14 @@ namespace ModelSim
         #endregion
 
         #region Simulation
+        public double DeegresToRadians(int Angle)
+        {
+            return (Angle * Math.PI) / 180f;
+        }
+
         public SimulationResult Run()
         {
-            UniformDistribution uniform = new UniformDistribution(0, (2 * Math.PI));
+            UniformDistribution uniform = new UniformDistribution(0, 360);
             SimulationResult simulationResult = new SimulationResult();
             double x = 0;
             double y = 0;
@@ -33,9 +38,9 @@ namespace ModelSim
             for (int i=0; i < this.Steps; i++)
             {
                 int l = 1;
-                double angleRad = uniform.GetRandomValue();
-                x = (x + (l * Math.Cos(angleRad)));                
-                y = (y + (l * Math.Sin(angleRad)));
+                int angleRad = uniform.GetRandomValue();
+                x = (x + (l * Math.Cos(this.DeegresToRadians(angleRad))));                
+                y = (y + (l * Math.Sin(this.DeegresToRadians(angleRad))));
                 double distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
                 if (i == 0)
                 {
